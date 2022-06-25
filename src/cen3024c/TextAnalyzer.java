@@ -79,14 +79,14 @@ public class TextAnalyzer{
                 wordCount = 0;
             }
 
-            // Custom comparator to order the values (occurances) from greatest to least.
+            // Custom comparator to order the values (occurrences) from greatest to least.
             Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
                 public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
                     Integer v1 = e1.getValue();
                     Integer v2 = e2.getValue();
                     String k1 = e1.getKey();
                     String k2 = e2.getKey();
-                    // If the number of occurances are equal, sort the words in alphabetical order.
+                    // If the number of occurrences are equal, sort the words in alphabetical order.
                     if (v2 == v1) {
                         return k1.compareTo(k2);
                     } else {
