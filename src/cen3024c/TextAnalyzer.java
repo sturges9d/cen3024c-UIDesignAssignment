@@ -20,17 +20,15 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 public class TextAnalyzer{
-    public static String analyzeText() {
-    	String result = ""; // Used for output to TestClass GUI.
+    public static ArrayList<String> analyzeText(URL url, String startTextLine, String endTextLine) {
+    	ArrayList<String> textToAnalyze = new ArrayList<String>();
     	try {
-            URL url = new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm");
             BufferedReader input = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
 
             // Define loop control variables and create ArrayList for analysis.
             Boolean readInput = true;
             Boolean printLines = false;
             Boolean emptyLine = false;
-            ArrayList<String> textToAnalyze = new ArrayList<String>();
             String inputLine;
             
             /**
@@ -39,93 +37,103 @@ public class TextAnalyzer{
              */
             while ((inputLine = input.readLine().replaceAll("<[^>]*>", "").replaceAll("’", "'")) != null && readInput) {
                 // Controls the start of the relevant text to analyze.
-                if (inputLine.equalsIgnoreCase("The Raven")) {
+                if (inputLine.equalsIgnoreCase(startTextLine)) {
                     printLines = true;
-                }
+                } // End of if statement.
+                
                 // Removes empty lines from being included in the relevant text ArrayList.
                 if (inputLine.isEmpty()) {
                     emptyLine = true;
                 } else {
                     emptyLine = false;
-                }
+                } // End of if-else statement.
+                
                 // Controls the end of the relevant text to analyze.
-                if (inputLine.equalsIgnoreCase("*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***")) {
+                if (inputLine.equalsIgnoreCase(endTextLine)) {
                     printLines = false;
                     readInput = false;
-                }
+                } // End of if statement.
+                
                 // Splits the String lines into string words and places them into the textToAnalyze array.
                 if (printLines == true && emptyLine == false) {
-                    String outputTextArray[] = inputLine.split("&mdash|[^’'a-z[A-Z]]");
+                    String outputTextArray[] = inputLine.split("&mdash|[^'a-z[A-Z]]");
                     for (int i = 0; i < outputTextArray.length; i++) {
                         if (!outputTextArray[i].isEmpty()) {
                             textToAnalyze.add(outputTextArray[i].trim().toLowerCase());
-                        }
-                    }
-                }
-            }
-
-            // Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
-            HashMap<String, Integer> results = new HashMap<>();
-            for (int i = 0; i < textToAnalyze.size(); i++) {
-                int wordCount = 0;
-                String word = textToAnalyze.get(i);
-                for (int j = 0; j < textToAnalyze.size(); j++) {
-                    if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
-                        wordCount++;
-                        textToAnalyze.remove(j);
-                    }
-                }
-                results.put(word, wordCount);
-                wordCount = 0;
-            }
-
-            // Custom comparator to order the values (occurrences) from greatest to least.
-            Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
-                public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
-                    Integer v1 = e1.getValue();
-                    Integer v2 = e2.getValue();
-                    String k1 = e1.getKey();
-                    String k2 = e2.getKey();
-                    // If the number of occurrences are equal, sort the words in alphabetical order.
-                    if (v2 == v1) {
-                        return k1.compareTo(k2);
-                    } else {
-                        return v2.compareTo(v1);
-                    }
-                }
-            };
-            
-            // Place all the entries from the results HashMap into a Set.
-            Set<Entry<String, Integer>> resultsSet = results.entrySet();
-
-            // Create a new ArrayList from the Set.
-            List<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(resultsSet);
-
-            // Sort the ArrayList using the custom comparator.
-            Collections.sort(listOfEntries, valueComparator);
-
-            // Create a new LinkedHashMap to store the values from the sorted ArrayList.
-            LinkedHashMap<String, Integer> sortedByValue = new LinkedHashMap<String, Integer>(listOfEntries.size());
-
-            // Place the key and value pairs into the new LinkedHashMap.
-            for (Entry<String,Integer> entry : listOfEntries) {
-                sortedByValue.put(entry.getKey(), entry.getValue());
-            }
-
-            // Output results to a String.
-            Set<Entry<String, Integer>> entrySetSortedByValue = sortedByValue.entrySet();
-            int i = 0;
-            for(Entry<String, Integer> mapping : entrySetSortedByValue) {
-                i++;
-                result += (i + ". " + mapping.getKey() + ", " + mapping.getValue() + "\n");
-                // Stop the list at 20 entries.
-                if (i == 20) {
-                    break;
-                }
-            }
-        } catch (Exception e) {
+                        } // End of if statement.
+                    } // End of for loop.
+                } // End of if statement.
+            } // End of while loop.
+    	} catch (Exception e) {
             e.printStackTrace();
-        }
-		return result;
-    }
-}
+        } // End of try-catch statement.
+    	return textToAnalyze;
+    } // End of analyzeTextMethod.
+    	
+    protected static HashMap<String, Integer> convertToHashMap(ArrayList<String> textToAnalyze) {
+    	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
+        HashMap<String, Integer> results = new HashMap<>();
+        for (int i = 0; i < textToAnalyze.size(); i++) {
+            int wordCount = 0;
+            String word = textToAnalyze.get(i);
+            for (int j = 0; j < textToAnalyze.size(); j++) {
+                if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
+                    wordCount++;
+                    textToAnalyze.remove(j);
+                } // End of if statement.
+            } // End of for loop.
+            results.put(word, wordCount);
+            wordCount = 0;
+        } // End of for loop.
+        return results;
+    } // End of convertToHashMap() method.
+
+    protected static String compareResults(HashMap<String, Integer> results) {
+        // Custom comparator to order the values (occurrences) from greatest to least.
+        Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
+            public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
+                Integer v1 = e1.getValue();
+                Integer v2 = e2.getValue();
+                String k1 = e1.getKey();
+                String k2 = e2.getKey();
+                // If the number of occurrences are equal, sort the words in alphabetical order.
+                if (v2 == v1) {
+                    return k1.compareTo(k2);
+                } else {
+                    return v2.compareTo(v1);
+                } // End of if-else statement.
+            } // End of compare method.
+        };
+        
+        // Place all the entries from the results HashMap into a Set.
+        Set<Entry<String, Integer>> resultsSet = results.entrySet();
+
+        // Create a new ArrayList from the Set.
+        List<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(resultsSet);
+
+        // Sort the ArrayList using the custom comparator.
+        Collections.sort(listOfEntries, valueComparator);
+
+        // Create a new LinkedHashMap to store the values from the sorted ArrayList.
+        LinkedHashMap<String, Integer> sortedByValue = new LinkedHashMap<String, Integer>(listOfEntries.size());
+
+        // Place the key and value pairs into the new LinkedHashMap.
+        for (Entry<String,Integer> entry : listOfEntries) {
+            sortedByValue.put(entry.getKey(), entry.getValue());
+        } // End of for loop.
+
+        // Output results to a String.
+        String result = ""; // Used for output to TestClass GUI.
+        Set<Entry<String, Integer>> entrySetSortedByValue = sortedByValue.entrySet();
+        int i = 0;
+        for(Entry<String, Integer> mapping : entrySetSortedByValue) {
+            i++;
+            result += (i + ". " + mapping.getKey() + ", " + mapping.getValue() + "\n");
+            // Stop the list at 20 entries.
+            if (i == 20) {
+                break;
+            } // End of if statement.
+        } // End of for loop.
+	return result;
+    } // End of compareResults method.
+} // End of TextAnalyzer Class.

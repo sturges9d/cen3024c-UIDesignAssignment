@@ -6,6 +6,8 @@
  */
 package cen3024c;
 
+import java.net.URL;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +25,7 @@ public class TestClass extends Application {
 	private Stage window;
 	private Scene scene1, scene2;
 	
-	// Constants for consistent button and window sizing.
+	// Constants for button and window sizes.
 	private final int buttonWidth = 50;
 	private final int buttonHeight = 20;
 	private final int windowWidth = 300;
@@ -77,7 +79,11 @@ public class TestClass extends Application {
 		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
 		GridPane.setConstraints(listTitle, 0, 0);
 		
-		Label listResult = new Label(TextAnalyzer.analyzeText());
+		Label listResult = new Label(TextAnalyzer.compareResults(
+										TextAnalyzer.convertToHashMap(
+											TextAnalyzer.analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm")
+																				, "The Raven"
+																				, "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***"))));
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
@@ -104,7 +110,7 @@ public class TestClass extends Application {
 		
 		window.setScene(scene1);
 		window.show();
-	}
+	} // End of start method.
 
 	/**
 	 * This method calls the ConfirmBox class to confirm user's choice to close the program.
@@ -114,5 +120,5 @@ public class TestClass extends Application {
 		if(answer) {
 			window.close();
 		}
-	}
-}
+	} // End of closeProgram method.
+} // End of TestClass class.
