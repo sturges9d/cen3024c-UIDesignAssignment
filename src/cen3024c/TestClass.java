@@ -79,9 +79,9 @@ public class TestClass extends Application {
 		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
 		GridPane.setConstraints(listTitle, 0, 0);
 		
-		Label listResult = new Label(TextAnalyzer.compareResults(
-										TextAnalyzer.convertToHashMap(
-											TextAnalyzer.analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm")
+		Label listResult = new Label(TextAnalyzer.sortHashMap(
+										TextAnalyzer.convertArrayListToHashMap(
+											TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm")
 																				, "The Raven"
 																				, "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***"))));
 		GridPane.setConstraints(listResult, 0, 1);
