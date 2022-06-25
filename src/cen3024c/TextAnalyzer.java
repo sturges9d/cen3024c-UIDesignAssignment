@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 
 public class TextAnalyzer{
     public static String analyzeText() {
-    	String result = "";
+    	String result = ""; // Used for output to TestClass GUI.
     	try {
             URL url = new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm");
             BufferedReader input = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
@@ -32,6 +32,11 @@ public class TextAnalyzer{
             Boolean emptyLine = false;
             ArrayList<String> textToAnalyze = new ArrayList<String>();
             String inputLine;
+            
+            /**
+             * This while loop replaces all HTML tags with nothing and replace the special character ’ with '.
+             * If the string with all replacements is null, or the readInput variable is false, then exit the loop.
+             */
             while ((inputLine = input.readLine().replaceAll("<[^>]*>", "").replaceAll("’", "'")) != null && readInput) {
                 // Controls the start of the relevant text to analyze.
                 if (inputLine.equalsIgnoreCase("The Raven")) {
@@ -59,7 +64,7 @@ public class TextAnalyzer{
                 }
             }
 
-            // Count the number of occurances of a word in the ArrayList of text from the URL and store the word and its number of occurances in a HashMap.
+            // Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
             HashMap<String, Integer> results = new HashMap<>();
             for (int i = 0; i < textToAnalyze.size(); i++) {
                 int wordCount = 0;
@@ -107,7 +112,7 @@ public class TextAnalyzer{
                 sortedByValue.put(entry.getKey(), entry.getValue());
             }
 
-            // Display the results.
+            // Output results to a String.
             Set<Entry<String, Integer>> entrySetSortedByValue = sortedByValue.entrySet();
             int i = 0;
             for(Entry<String, Integer> mapping : entrySetSortedByValue) {
