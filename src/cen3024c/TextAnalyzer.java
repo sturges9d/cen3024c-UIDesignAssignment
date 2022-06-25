@@ -19,7 +19,40 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class TextAnalyzer{
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class TextAnalyzer extends Application {
+	private Stage window;
+	private Scene scene1, scene2;
+	
+	// Constants for button and window sizes.
+	private final int buttonWidth = 50;
+	private final int buttonHeight = 20;
+	private final int windowWidth = 300;
+	private final int windowHeight = 430;
+	private final int insetsTop = 10;
+	private final int insetsRight = 10;
+	private final int insetsBottom = 10;
+	private final int insetsLeft = 10;
+	
+	/**
+	 * 
+	 * 
+	 * @param url
+	 * @param startTextLine
+	 * @param endTextLine
+	 * @return
+	 */
     public static ArrayList<String> analyzeText(URL url, String startTextLine, String endTextLine) {
     	ArrayList<String> textToAnalyze = new ArrayList<String>();
     	try {
@@ -32,7 +65,7 @@ public class TextAnalyzer{
             String inputLine;
             
             /**
-             * This while loop replaces all HTML tags with nothing and replace the special character ’ with '.
+             * Replaces all HTML tags with nothing and replace the special character ’ with '.
              * If the string with all replacements is null, or the readInput variable is false, then exit the loop.
              */
             while ((inputLine = input.readLine().replaceAll("<[^>]*>", "").replaceAll("’", "'")) != null && readInput) {
@@ -69,25 +102,13 @@ public class TextAnalyzer{
         } // End of try-catch statement.
     	return textToAnalyze;
     } // End of analyzeTextMethod.
-    	
-    protected static HashMap<String, Integer> convertToHashMap(ArrayList<String> textToAnalyze) {
-    	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
-        HashMap<String, Integer> results = new HashMap<>();
-        for (int i = 0; i < textToAnalyze.size(); i++) {
-            int wordCount = 0;
-            String word = textToAnalyze.get(i);
-            for (int j = 0; j < textToAnalyze.size(); j++) {
-                if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
-                    wordCount++;
-                    textToAnalyze.remove(j);
-                } // End of if statement.
-            } // End of for loop.
-            results.put(word, wordCount);
-            wordCount = 0;
-        } // End of for loop.
-        return results;
-    } // End of convertToHashMap() method.
 
+    /**
+     * 
+     * 
+     * @param results
+     * @return
+     */
     protected static String compareResults(HashMap<String, Integer> results) {
         // Custom comparator to order the values (occurrences) from greatest to least.
         Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
@@ -136,4 +157,116 @@ public class TextAnalyzer{
         } // End of for loop.
 	return result;
     } // End of compareResults method.
+    
+    /**
+     * 
+     * 
+     * @param textToAnalyze
+     * @return
+     */
+    protected static HashMap<String, Integer> convertToHashMap(ArrayList<String> textToAnalyze) {
+    	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
+        HashMap<String, Integer> results = new HashMap<>();
+        for (int i = 0; i < textToAnalyze.size(); i++) {
+            int wordCount = 0;
+            String word = textToAnalyze.get(i);
+            for (int j = 0; j < textToAnalyze.size(); j++) {
+                if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
+                    wordCount++;
+                    textToAnalyze.remove(j);
+                } // End of if statement.
+            } // End of for loop.
+            results.put(word, wordCount);
+            wordCount = 0;
+        } // End of for loop.
+        return results;
+    } // End of convertToHashMap() method.
+	
+	/**
+	 * This is the main method.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
+	/**
+	 * Overrides the start method from the Application class.
+	 */
+	public void start(Stage primaryStage) throws Exception {
+		window = primaryStage;
+		window.setTitle("Word Occurances");
+		window.setOnCloseRequest(e -> {
+			e.consume();
+			closeProgram();
+		});
+		
+		// First scene (Splash screen).
+		Label label1 = new Label("Welcome to my Word Occurances program!");
+		Button nextButton = new Button("Next");
+		nextButton.setPrefSize(buttonWidth, buttonHeight);
+		nextButton.setOnAction(e -> window.setScene(scene2));
+		
+		VBox bottomMenu1 = new VBox();
+		bottomMenu1.getChildren().addAll(nextButton);
+		bottomMenu1.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		bottomMenu1.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		BorderPane borderPane1 = new BorderPane();
+		borderPane1.setCenter(label1);
+		borderPane1.setBottom(bottomMenu1);
+		
+		// Second scene (Results screen).
+		GridPane grid = new GridPane();
+		grid.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		grid.setVgap(8);;
+		grid.setHgap(10);
+		
+		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
+		GridPane.setConstraints(listTitle, 0, 0);
+		
+		Label listResult = new Label(compareResults(
+										convertToHashMap(
+											analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm")
+														, "The Raven"
+														, "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***"))));
+		GridPane.setConstraints(listResult, 0, 1);
+		
+		grid.getChildren().addAll(listTitle, listResult);
+		
+		Button backButton = new Button("Back");
+		backButton.setPrefSize(buttonWidth, buttonHeight);
+		backButton.setOnAction(e -> window.setScene(scene1));
+		
+		Button exitButton = new Button("Exit");
+		exitButton.setPrefSize(buttonWidth, buttonHeight);
+		exitButton.setOnAction(e -> closeProgram());
+		
+		HBox bottomMenu2 = new HBox();
+		bottomMenu2.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		bottomMenu2.setSpacing(windowWidth - ((2 * buttonWidth) + (insetsRight + insetsLeft)));
+		bottomMenu2.getChildren().addAll(backButton, exitButton);
+		
+		BorderPane borderPane2 = new BorderPane();
+		borderPane2.setCenter(grid);
+		borderPane2.setBottom(bottomMenu2);
+		
+		scene1 = new Scene(borderPane1, windowWidth, windowHeight);
+		scene2 = new Scene(borderPane2, windowWidth, windowHeight);
+		
+		window.setScene(scene1);
+		window.show();
+	} // End of start method.
+
+	/**
+	 * Calls the ConfirmBox class to confirm user's choice to close the program.
+	 */
+	private void closeProgram() {
+		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
+		if(answer) {
+			window.close();
+		}
+	} // End of closeProgram method.
+
 } // End of TextAnalyzer Class.

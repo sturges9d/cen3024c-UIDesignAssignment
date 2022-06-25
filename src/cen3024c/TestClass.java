@@ -40,9 +40,9 @@ public class TestClass extends Application {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		launch(args);
-	}
+//	public static void main(String[] args) {
+//		launch(args);
+//	}
 	
 	/**
 	 * This is the overridden start method from the Application class.
