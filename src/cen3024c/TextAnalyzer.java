@@ -8,6 +8,7 @@ package cen3024c;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,20 +21,24 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class TextAnalyzer extends Application {
+public class TextAnalyzer extends Application implements EventHandler<ActionEvent> {
 	private Stage window;
-	private Scene scene1, scene2;
+	private Scene scene1;
+	private Scene scene2;
 	
 	// Constants for button and window sizes.
 	private final int buttonWidth = 50;
@@ -44,6 +49,53 @@ public class TextAnalyzer extends Application {
 	private final int insetsRight = 10;
 	private final int insetsBottom = 10;
 	private final int insetsLeft = 10;
+	
+	// Create button(s) and/or field(s) (in order of appearance in program).
+	TextField urlField;
+	TextField startTextField;
+	TextField endTextField;
+	Button nextButton;
+	Button backButton;
+	Button exitButton;
+	
+	URL textURL;
+	ArrayList<String> poemText;
+	HashMap<String, Integer> results;
+	String sortedResults;
+	
+	/**
+	 * Calls the ConfirmBox class to confirm user's choice to close the program.
+	 */
+	private void closeProgram() {
+		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
+		if(answer) {
+			window.close();
+		}
+	} // End of closeProgram method.
+	
+    /**
+     * Converts an ArrayList to HashMap.
+     * 
+     * @param textToAnalyze
+     * @return
+     */
+    protected static HashMap<String, Integer> convertArrayListToHashMap(ArrayList<String> textToAnalyze) {
+    	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
+        HashMap<String, Integer> results = new HashMap<>();
+        for (int i = 0; i < textToAnalyze.size(); i++) {
+            int wordCount = 0;
+            String word = textToAnalyze.get(i);
+            for (int j = 0; j < textToAnalyze.size(); j++) {
+                if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
+                    wordCount++;
+                    textToAnalyze.remove(j);
+                } // End of if statement.
+            } // End of for loop.
+            results.put(word, wordCount);
+            wordCount = 0;
+        } // End of for loop.
+        return results;
+    } // End of convertArrayListToHashMap() method.
 	
 	/**
 	 * Reads the text from a webpage.
@@ -101,7 +153,130 @@ public class TextAnalyzer extends Application {
             e.printStackTrace();
         } // End of try-catch statement.
     	return textToAnalyze;
-    } // End of analyzeTextMethod.
+    } // End of extractText method.
+	
+    /**
+     * 
+     */
+    public void handle(ActionEvent event) {
+    	if(event.getSource() == nextButton) {
+    		try { 
+				textURL = new URL(urlField.getText());
+				poemText = extractText(textURL, startTextField.getText(), endTextField.getText());
+				results = convertArrayListToHashMap(poemText);
+				sortedResults = sortHashMap(results);
+			} catch (MalformedURLException e) {
+				System.out.println("ERROR: Malformed URL Exception.");
+				e.printStackTrace();
+			} // End of try-catch statement for URL.
+    		window.setScene(scene2);
+    	} // End of if statement for nextButton.
+    	
+    	if(event.getSource() == backButton) {
+    		window.setScene(scene1);
+    	} // End of if statement for backButton.
+    	
+    	if(event.getSource() == exitButton) {
+    		closeProgram();
+    	} // End of if statement for exitButton.
+    	
+    	if(event.getSource() == window) {
+    		event.consume();
+			closeProgram();
+    	} // End of if method for window.
+    } // End of handle method.
+    
+	/**
+	 * This is the main method.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
+	/**
+	 * Overrides the start method from the Application class.
+	 * 
+	 * @param primaryStage
+	 */
+	public void start(Stage primaryStage) throws Exception {
+		window = primaryStage;
+		window.setTitle("Word Occurances");
+//		window.setOnCloseRequest(e -> {
+//			e.consume();
+//			closeProgram();
+//		});
+		
+		// First scene (Splash screen).
+		Label label1 = new Label("Welcome to my Word Occurances program!");
+		TextField urlField = new TextField("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm");
+		TextField startTextField = new TextField("The Raven");
+		TextField endTextField = new TextField("*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		
+		nextButton = new Button("Next");
+		nextButton.setPrefSize(buttonWidth, buttonHeight);
+		nextButton.setOnAction(this);
+//		nextButton.setOnAction(e -> {
+//			window.setScene(scene2);
+//		});
+		
+		VBox centerMenu = new VBox();
+		centerMenu.getChildren().addAll(label1, urlField, startTextField, endTextField);
+		centerMenu.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		centerMenu.setAlignment(Pos.CENTER);
+		
+		VBox bottomMenu1 = new VBox();
+		bottomMenu1.getChildren().addAll(nextButton);
+		bottomMenu1.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		bottomMenu1.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		BorderPane borderPane1 = new BorderPane();
+		borderPane1.setCenter(centerMenu);
+		borderPane1.setBottom(bottomMenu1);
+		
+		// Second scene (Results screen).
+		GridPane grid = new GridPane();
+		grid.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		grid.setVgap(8);;
+		grid.setHgap(10);
+		
+		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
+		GridPane.setConstraints(listTitle, 0, 0);
+		
+//		ArrayList<String> poemText = extractText(textURL, startTextFieldText, endTextFieldText);
+//		HashMap<String, Integer> results = convertArrayListToHashMap(poemText);
+//		String sortedResults = sortHashMap(results);
+		
+		Label listResult = new Label(sortedResults);
+
+		GridPane.setConstraints(listResult, 0, 1);
+		
+		grid.getChildren().addAll(listTitle, listResult);
+		
+		backButton = new Button("Back");
+		backButton.setPrefSize(buttonWidth, buttonHeight);
+//		backButton.setOnAction(e -> window.setScene(scene1));
+		
+		exitButton = new Button("Exit");
+		exitButton.setPrefSize(buttonWidth, buttonHeight);
+//		exitButton.setOnAction(e -> closeProgram());
+		
+		HBox bottomMenu2 = new HBox();
+		bottomMenu2.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		bottomMenu2.setSpacing(windowWidth - ((2 * buttonWidth) + (insetsRight + insetsLeft)));
+		bottomMenu2.getChildren().addAll(backButton, exitButton);
+		
+		BorderPane borderPane2 = new BorderPane();
+		borderPane2.setCenter(grid);
+		borderPane2.setBottom(bottomMenu2);
+		
+		scene1 = new Scene(borderPane1, windowWidth, windowHeight);
+		scene2 = new Scene(borderPane2, windowWidth, windowHeight);
+		
+		window.setScene(scene1);
+		window.show();
+	} // End of start method.
 
     /**
      * Sorts the values stored in a HashMap
@@ -156,122 +331,6 @@ public class TextAnalyzer extends Application {
             } // End of if statement.
         } // End of for loop.
 	return result;
-    } // End of compareResults method.
+    } // End of sortHashMap method.
     
-    /**
-     * Converts an ArrayList to HashMap.
-     * 
-     * @param textToAnalyze
-     * @return
-     */
-    protected static HashMap<String, Integer> convertArrayListToHashMap(ArrayList<String> textToAnalyze) {
-    	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
-        HashMap<String, Integer> results = new HashMap<>();
-        for (int i = 0; i < textToAnalyze.size(); i++) {
-            int wordCount = 0;
-            String word = textToAnalyze.get(i);
-            for (int j = 0; j < textToAnalyze.size(); j++) {
-                if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
-                    wordCount++;
-                    textToAnalyze.remove(j);
-                } // End of if statement.
-            } // End of for loop.
-            results.put(word, wordCount);
-            wordCount = 0;
-        } // End of for loop.
-        return results;
-    } // End of convertToHashMap() method.
-	
-	/**
-	 * This is the main method.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		launch(args);
-	}
-	
-	/**
-	 * Overrides the start method from the Application class.
-	 * 
-	 * @param primaryStage
-	 */
-	public void start(Stage primaryStage) throws Exception {
-		window = primaryStage;
-		window.setTitle("Word Occurances");
-		window.setOnCloseRequest(e -> {
-			e.consume();
-			closeProgram();
-		});
-		
-		// First scene (Splash screen).
-		Label label1 = new Label("Welcome to my Word Occurances program!");
-		Button nextButton = new Button("Next");
-		nextButton.setPrefSize(buttonWidth, buttonHeight);
-		nextButton.setOnAction(e -> window.setScene(scene2));
-		
-		VBox bottomMenu1 = new VBox();
-		bottomMenu1.getChildren().addAll(nextButton);
-		bottomMenu1.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
-		bottomMenu1.setAlignment(Pos.BOTTOM_RIGHT);
-		
-		BorderPane borderPane1 = new BorderPane();
-		borderPane1.setCenter(label1);
-		borderPane1.setBottom(bottomMenu1);
-		
-		// Second scene (Results screen).
-		GridPane grid = new GridPane();
-		grid.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
-		grid.setVgap(8);;
-		grid.setHgap(10);
-		
-		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
-		GridPane.setConstraints(listTitle, 0, 0);
-		
-<<<<<<< HEAD
-		ArrayList<String> poemText = analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"),"The Raven","*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		HashMap<String, Integer> results = convertToHashMap(poemText);
-		String sortedResults = compareResults(results);
-		
-		Label listResult = new Label(sortedResults);
-=======
->>>>>>> c49732656172ef35fe3f867e10bc9a87e021e8ec
-		GridPane.setConstraints(listResult, 0, 1);
-		
-		grid.getChildren().addAll(listTitle, listResult);
-		
-		Button backButton = new Button("Back");
-		backButton.setPrefSize(buttonWidth, buttonHeight);
-		backButton.setOnAction(e -> window.setScene(scene1));
-		
-		Button exitButton = new Button("Exit");
-		exitButton.setPrefSize(buttonWidth, buttonHeight);
-		exitButton.setOnAction(e -> closeProgram());
-		
-		HBox bottomMenu2 = new HBox();
-		bottomMenu2.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
-		bottomMenu2.setSpacing(windowWidth - ((2 * buttonWidth) + (insetsRight + insetsLeft)));
-		bottomMenu2.getChildren().addAll(backButton, exitButton);
-		
-		BorderPane borderPane2 = new BorderPane();
-		borderPane2.setCenter(grid);
-		borderPane2.setBottom(bottomMenu2);
-		
-		scene1 = new Scene(borderPane1, windowWidth, windowHeight);
-		scene2 = new Scene(borderPane2, windowWidth, windowHeight);
-		
-		window.setScene(scene1);
-		window.show();
-	} // End of start method.
-
-	/**
-	 * Calls the ConfirmBox class to confirm user's choice to close the program.
-	 */
-	private void closeProgram() {
-		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
-		if(answer) {
-			window.close();
-		}
-	} // End of closeProgram method.
-
 } // End of TextAnalyzer Class.
