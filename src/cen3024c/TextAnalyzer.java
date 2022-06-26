@@ -33,6 +33,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class TextAnalyzer extends Application {
+	
 	private Stage window;
 	private Scene scene1;
 	private Scene scene2;
