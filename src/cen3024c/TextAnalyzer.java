@@ -214,7 +214,6 @@ public class TextAnalyzer extends Application {
 		String sortedResults = sortHashMap(results);
 		
 		Label listResult = new Label(sortedResults);
-
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
