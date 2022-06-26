@@ -226,11 +226,11 @@ public class TextAnalyzer extends Application {
 		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
 		GridPane.setConstraints(listTitle, 0, 0);
 		
-		Label listResult = new Label(compareResults(
-										convertToHashMap(
-											analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm")
-														, "The Raven"
-														, "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***"))));
+		ArrayList<String> poemText = analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"),"The Raven","*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		HashMap<String, Integer> results = convertToHashMap(poemText);
+		String sortedResults = compareResults(results);
+		
+		Label listResult = new Label(sortedResults);
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
