@@ -28,21 +28,6 @@ class JUnitTestLogic {
 	public void setUp() throws Exception {
 		System.out.println("Before.");
 	} // End of setUp method.
-
-	@Test
-	void extractTextTest() {
-		System.out.println("Test case: extractText.");
-		ArrayList<String> testList = new ArrayList<String>();
-		
-		try {
-			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		} catch (MalformedURLException e) {
-			fail("Malformed URL exception.");
-			e.printStackTrace();
-		} // End of try-catch block.
-		assertNotNull(testList);
-		System.out.println(testList);
-	} // End extractTextTest.
 	
 	@Test
 	void arrayListToHashMapConversionTest() {
@@ -62,11 +47,26 @@ class JUnitTestLogic {
 	} // End of arrayListToHashMapConversionTest.
 	
 	@Test
-	void sortHashMapTest() {
-		System.out.println("Test case: sortHashMap.");
+	void extractTextTest() {
+		System.out.println("Test case: extractText.");
+		ArrayList<String> testList = new ArrayList<String>();
+		
+		try {
+			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		} catch (MalformedURLException e) {
+			fail("Malformed URL exception.");
+			e.printStackTrace();
+		} // End of try-catch block.
+		assertNotNull(testList);
+		System.out.println(testList);
+	} // End extractTextTest.
+	
+	@Test
+	void sortHashMapTest1() {
+		System.out.println("Test case: sortHashMap 1.");
 		ArrayList<String> testList = new ArrayList<String>();
 		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
-		String sortedHashMap;
+		HashMap<String, Integer> sortedHashMap;
 		
 		try {
 			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
@@ -76,9 +76,49 @@ class JUnitTestLogic {
 		} // End of try-catch block.
 		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
 		sortedHashMap = TextAnalyzer.sortHashMap(testHashMap);
-		
+		assertNotNull(sortedHashMap);
 		System.out.println(sortedHashMap);
-	} // End of sortHashMapTest.
+	} // End of sortHashMapTest1.
+	
+	@Test
+	void sortHashMapTest2() {
+		System.out.println("Test case: sortHashMap 2.");
+		ArrayList<String> testList = new ArrayList<String>();
+		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
+		HashMap<String, Integer> sortedHashMap;
+		
+		try {
+			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		} catch (MalformedURLException e) {
+			fail("Malformed URL exception.");
+			e.printStackTrace();
+		} // End of try-catch block.
+		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
+		sortedHashMap = TextAnalyzer.sortHashMap(testHashMap);
+		assertTrue(sortedHashMap.get("the") == 57);
+		assertTrue(sortedHashMap.get("caught") == 1);
+		System.out.println(sortedHashMap);
+	} // End of sortHashMapTest2.
+	
+	@Test
+	void convertHashMapToStringTest() {
+		System.out.println("Test case: convertHashMapToString.");
+		ArrayList<String> testList = new ArrayList<String>();
+		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
+		HashMap<String, Integer> sortedHashMap;
+		
+		try {
+			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		} catch (MalformedURLException e) {
+			fail("Malformed URL exception.");
+			e.printStackTrace();
+		} // End of try-catch block.
+		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
+		sortedHashMap = TextAnalyzer.sortHashMap(testHashMap);
+		String sortedResultsString = TextAnalyzer.convertHashMapToString(sortedHashMap);
+		assertNotNull(sortedResultsString);
+		System.out.println(sortedResultsString);
+	} // End of convertHashMapToStringTest.
 	
 	@After
 	public void tearDown() throws Exception {

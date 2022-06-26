@@ -1,8 +1,10 @@
 /**
+ * DEPRECATED
  * This class displays adds GUI functionality to the TextAnalyzer class via JavaFX.
  * 
  * @author Stephen Sturges Jr
  * @version 06/19/2022
+ * DEPRECATED
  */
 package cen3024c;
 

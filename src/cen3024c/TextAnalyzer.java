@@ -1,8 +1,7 @@
 /**
  * This class is a modification of the CEN 3024C SDLC Assignment for the CEN3024C UI Design Assignment.
- * 
  * @author Stephen Sturges Jr
- * @version 06/19/2022
+ * @version 06/26/2022
  */
 package cen3024c;
 
@@ -60,9 +59,8 @@ public class TextAnalyzer extends Application {
 	
     /**
      * Converts an ArrayList to HashMap.
-     * 
      * @param textToAnalyze
-     * @return
+     * @return HashMap containing (word, number of occurrences) pairs.
      */
     protected static HashMap<String, Integer> convertArrayListToHashMap(ArrayList<String> textToAnalyze) {
     	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
@@ -84,7 +82,6 @@ public class TextAnalyzer extends Application {
 	
 	/**
 	 * Reads the text from a webpage.
-	 * 
 	 * @param url The URL of the website you wish to extract text from.
 	 * @param startTextLine The first line of the text you want to extract.
 	 * @param endTextLine The line after the last line you want to extract.
@@ -142,7 +139,6 @@ public class TextAnalyzer extends Application {
     
 	/**
 	 * This is the main method.
-	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -151,7 +147,6 @@ public class TextAnalyzer extends Application {
 	
 	/**
 	 * Overrides the start method from the Application class.
-	 * 
 	 * @param primaryStage
 	 */
 	public void start(Stage primaryStage) throws Exception {
@@ -171,15 +166,6 @@ public class TextAnalyzer extends Application {
 		TextField startTextField = new TextField("The Raven");
 		Label endTextLabel = new Label("Please enter the end line of the text:");
 		TextField endTextField = new TextField("*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		
-		// Used for testing another poem.
-//		TextField urlField = new TextField("https://www.gutenberg.org/files/68410/68410-h/68410-h.htm");
-//		Label urlLabel = new Label("Please enter the page URL:");
-//		URL textURL = new URL(urlField.getText());
-//		Label startTextLabel = new Label("Please enter the first line of the text:");
-//		TextField startTextField = new TextField("DENY THE SLAKE");
-//		Label endTextLabel = new Label("Please enter the end line of the text:");
-//		TextField endTextField = new TextField("*** END OF THE PROJECT GUTENBERG EBOOK DENY THE SLAKE ***");
 		
 		Button nextButton = new Button("Next");
 		nextButton.setPrefSize(buttonWidth, buttonHeight);
@@ -212,9 +198,11 @@ public class TextAnalyzer extends Application {
 		
 		ArrayList<String> poemText = extractText(textURL, startTextField.getText(), endTextField.getText());
 		HashMap<String, Integer> results = convertArrayListToHashMap(poemText);
-		String sortedResults = sortHashMap(results);
+		HashMap<String, Integer> sortedResults = sortHashMap(results);
+		String listResultString = convertHashMapToString(sortedResults);
 		
-		Label listResult = new Label(sortedResults);
+		
+		Label listResult = new Label(listResultString);
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
@@ -245,11 +233,10 @@ public class TextAnalyzer extends Application {
 
     /**
      * Sorts the values stored in a HashMap
-     * 
-     * @param results
-     * @return
+     * @param sortedByValue
+     * @return Sorted HashMap of words from highest occurrence to lowest.
      */
-    protected static String sortHashMap(HashMap<String, Integer> results) {
+    protected static HashMap<String, Integer> sortHashMap(HashMap<String, Integer> results) {
         // Custom comparator to order the values (occurrences) from greatest to least.
         Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
             public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
@@ -282,10 +269,18 @@ public class TextAnalyzer extends Application {
         for (Entry<String,Integer> entry : listOfEntries) {
             sortedByValue.put(entry.getKey(), entry.getValue());
         } // End of for loop.
-
-        // Output results to a String.
-        String result = ""; // Used for output to TestClass GUI.
-        Set<Entry<String, Integer>> entrySetSortedByValue = sortedByValue.entrySet();
+    
+        return sortedByValue;
+    } // End of sortHashMap method.
+    
+    /**
+     * Converts a (sorted) HashMap to a String to be displayed.
+     * @param sortedHashMap
+     * @return String in the format: i. word, #occurrences
+     */
+    protected static String convertHashMapToString(HashMap<String, Integer> sortedHashMap) {
+    	String result = ""; // Used for output to TestClass GUI.
+        Set<Entry<String, Integer>> entrySetSortedByValue = sortedHashMap.entrySet();
         int i = 0;
         for(Entry<String, Integer> mapping : entrySetSortedByValue) {
             i++;
@@ -295,7 +290,7 @@ public class TextAnalyzer extends Application {
                 break;
             } // End of if statement.
         } // End of for loop.
-	return result;
-    } // End of sortHashMap method.
+        return result;
+    } // End of convertHashMapToString method.
     
 } // End of TextAnalyzer Class.
