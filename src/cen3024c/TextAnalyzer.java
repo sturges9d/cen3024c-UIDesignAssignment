@@ -8,7 +8,6 @@ package cen3024c;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +20,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -35,7 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class TextAnalyzer extends Application implements EventHandler<ActionEvent> {
+public class TextAnalyzer extends Application {
 	private Stage window;
 	private Scene scene1;
 	private Scene scene2;
@@ -49,19 +46,6 @@ public class TextAnalyzer extends Application implements EventHandler<ActionEven
 	private final int insetsRight = 10;
 	private final int insetsBottom = 10;
 	private final int insetsLeft = 10;
-	
-	// Create button(s) and/or field(s) (in order of appearance in program).
-	TextField urlField;
-	TextField startTextField;
-	TextField endTextField;
-	Button nextButton;
-	Button backButton;
-	Button exitButton;
-	
-	URL textURL;
-	ArrayList<String> poemText;
-	HashMap<String, Integer> results;
-	String sortedResults;
 	
 	/**
 	 * Calls the ConfirmBox class to confirm user's choice to close the program.
@@ -154,37 +138,6 @@ public class TextAnalyzer extends Application implements EventHandler<ActionEven
         } // End of try-catch statement.
     	return textToAnalyze;
     } // End of extractText method.
-	
-    /**
-     * 
-     */
-    public void handle(ActionEvent event) {
-    	if(event.getSource() == nextButton) {
-    		try { 
-				textURL = new URL(urlField.getText());
-				poemText = extractText(textURL, startTextField.getText(), endTextField.getText());
-				results = convertArrayListToHashMap(poemText);
-				sortedResults = sortHashMap(results);
-			} catch (MalformedURLException e) {
-				System.out.println("ERROR: Malformed URL Exception.");
-				e.printStackTrace();
-			} // End of try-catch statement for URL.
-    		window.setScene(scene2);
-    	} // End of if statement for nextButton.
-    	
-    	if(event.getSource() == backButton) {
-    		window.setScene(scene1);
-    	} // End of if statement for backButton.
-    	
-    	if(event.getSource() == exitButton) {
-    		closeProgram();
-    	} // End of if statement for exitButton.
-    	
-    	if(event.getSource() == window) {
-    		event.consume();
-			closeProgram();
-    	} // End of if method for window.
-    } // End of handle method.
     
 	/**
 	 * This is the main method.
@@ -203,26 +156,38 @@ public class TextAnalyzer extends Application implements EventHandler<ActionEven
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
 		window.setTitle("Word Occurances");
-//		window.setOnCloseRequest(e -> {
-//			e.consume();
-//			closeProgram();
-//		});
+		window.setOnCloseRequest(e -> {
+			e.consume();
+			closeProgram();
+		});
 		
 		// First scene (Splash screen).
-		Label label1 = new Label("Welcome to my Word Occurances program!");
+		Label label1 = new Label("Welcome to my Word Occurrences program!");
+		Label urlLabel = new Label("Please enter the page URL:");
 		TextField urlField = new TextField("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm");
+		URL textURL = new URL(urlField.getText());
+		Label startTextLabel = new Label("Please enter the first line of the text:");
 		TextField startTextField = new TextField("The Raven");
+		Label endTextLabel = new Label("Please enter the end line of the text:");
 		TextField endTextField = new TextField("*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
 		
-		nextButton = new Button("Next");
+		// Used for testing another poem.
+//		TextField urlField = new TextField("https://www.gutenberg.org/files/68410/68410-h/68410-h.htm");
+//		Label urlLabel = new Label("Please enter the page URL:");
+//		URL textURL = new URL(urlField.getText());
+//		Label startTextLabel = new Label("Please enter the first line of the text:");
+//		TextField startTextField = new TextField("DENY THE SLAKE");
+//		Label endTextLabel = new Label("Please enter the end line of the text:");
+//		TextField endTextField = new TextField("*** END OF THE PROJECT GUTENBERG EBOOK DENY THE SLAKE ***");
+		
+		Button nextButton = new Button("Next");
 		nextButton.setPrefSize(buttonWidth, buttonHeight);
-		nextButton.setOnAction(this);
-//		nextButton.setOnAction(e -> {
-//			window.setScene(scene2);
-//		});
+		nextButton.setOnAction(e -> {
+			window.setScene(scene2);
+		});
 		
 		VBox centerMenu = new VBox();
-		centerMenu.getChildren().addAll(label1, urlField, startTextField, endTextField);
+		centerMenu.getChildren().addAll(label1, urlLabel, urlField, startTextLabel, startTextField, endTextLabel, endTextField);
 		centerMenu.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
 		centerMenu.setAlignment(Pos.CENTER);
 		
@@ -241,12 +206,12 @@ public class TextAnalyzer extends Application implements EventHandler<ActionEven
 		grid.setVgap(8);;
 		grid.setHgap(10);
 		
-		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
+		Label listTitle = new Label("Top 20 most used words in \"" + startTextField.getText() + "\"");
 		GridPane.setConstraints(listTitle, 0, 0);
 		
-//		ArrayList<String> poemText = extractText(textURL, startTextFieldText, endTextFieldText);
-//		HashMap<String, Integer> results = convertArrayListToHashMap(poemText);
-//		String sortedResults = sortHashMap(results);
+		ArrayList<String> poemText = extractText(textURL, startTextField.getText(), endTextField.getText());
+		HashMap<String, Integer> results = convertArrayListToHashMap(poemText);
+		String sortedResults = sortHashMap(results);
 		
 		Label listResult = new Label(sortedResults);
 
@@ -254,13 +219,13 @@ public class TextAnalyzer extends Application implements EventHandler<ActionEven
 		
 		grid.getChildren().addAll(listTitle, listResult);
 		
-		backButton = new Button("Back");
+		Button backButton = new Button("Back");
 		backButton.setPrefSize(buttonWidth, buttonHeight);
-//		backButton.setOnAction(e -> window.setScene(scene1));
+		backButton.setOnAction(e -> window.setScene(scene1));
 		
-		exitButton = new Button("Exit");
+		Button exitButton = new Button("Exit");
 		exitButton.setPrefSize(buttonWidth, buttonHeight);
-//		exitButton.setOnAction(e -> closeProgram());
+		exitButton.setOnAction(e -> closeProgram());
 		
 		HBox bottomMenu2 = new HBox();
 		bottomMenu2.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
