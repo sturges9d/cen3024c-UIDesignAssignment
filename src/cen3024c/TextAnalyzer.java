@@ -46,14 +46,14 @@ public class TextAnalyzer extends Application {
 	private final int insetsLeft = 10;
 	
 	/**
+	 * Reads the text from a webpage.
 	 * 
-	 * 
-	 * @param url
-	 * @param startTextLine
-	 * @param endTextLine
-	 * @return
+	 * @param url The URL of the website you wish to extract text from.
+	 * @param startTextLine The first line of the text you want to extract.
+	 * @param endTextLine The line after the last line you want to extract.
+	 * @return ArrayList of lower case strings.
 	 */
-    public static ArrayList<String> analyzeText(URL url, String startTextLine, String endTextLine) {
+    public static ArrayList<String> extractText(URL url, String startTextLine, String endTextLine) {
     	ArrayList<String> textToAnalyze = new ArrayList<String>();
     	try {
             BufferedReader input = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
@@ -104,12 +104,12 @@ public class TextAnalyzer extends Application {
     } // End of analyzeTextMethod.
 
     /**
-     * 
+     * Sorts the values stored in a HashMap
      * 
      * @param results
      * @return
      */
-    protected static String compareResults(HashMap<String, Integer> results) {
+    protected static String sortHashMap(HashMap<String, Integer> results) {
         // Custom comparator to order the values (occurrences) from greatest to least.
         Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
             public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
@@ -159,12 +159,12 @@ public class TextAnalyzer extends Application {
     } // End of compareResults method.
     
     /**
-     * 
+     * Converts an ArrayList to HashMap.
      * 
      * @param textToAnalyze
      * @return
      */
-    protected static HashMap<String, Integer> convertToHashMap(ArrayList<String> textToAnalyze) {
+    protected static HashMap<String, Integer> convertArrayListToHashMap(ArrayList<String> textToAnalyze) {
     	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
         HashMap<String, Integer> results = new HashMap<>();
         for (int i = 0; i < textToAnalyze.size(); i++) {
@@ -193,6 +193,8 @@ public class TextAnalyzer extends Application {
 	
 	/**
 	 * Overrides the start method from the Application class.
+	 * 
+	 * @param primaryStage
 	 */
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
@@ -226,11 +228,14 @@ public class TextAnalyzer extends Application {
 		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
 		GridPane.setConstraints(listTitle, 0, 0);
 		
+<<<<<<< HEAD
 		ArrayList<String> poemText = analyzeText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"),"The Raven","*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
 		HashMap<String, Integer> results = convertToHashMap(poemText);
 		String sortedResults = compareResults(results);
 		
 		Label listResult = new Label(sortedResults);
+=======
+>>>>>>> c49732656172ef35fe3f867e10bc9a87e021e8ec
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
