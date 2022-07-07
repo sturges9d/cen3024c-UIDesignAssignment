@@ -51,7 +51,7 @@ public class WordOccurrencesGUI extends Application {
 		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
 		if(answer) {
 			window.close();
-		}
+		} // End of if statement.
 	} // End of closeProgram method.
     
 	/**
@@ -75,7 +75,7 @@ public class WordOccurrencesGUI extends Application {
 			closeProgram();
 		});
 		
-		// First scene.
+		// First scene (Splash screen).
 		Label label1 = new Label("Welcome to my Word Occurances program!");
 		Button nextButton = new Button("Next");
 		nextButton.setPrefSize(buttonWidth, buttonHeight);

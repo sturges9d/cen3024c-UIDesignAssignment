@@ -19,7 +19,7 @@ public class ConfirmBox {
 
 	private static boolean answer;
 	
-	// Constants for consistent button and window sizing.
+	// Constants for button and window sizing.
 	private static final int buttonWidth = 50;
 	private static final int buttonHeight = 20;
 	private static final int windowWidth = 250;
@@ -29,11 +29,18 @@ public class ConfirmBox {
 	private static final int insetsBottom = 10;
 	private static final int insetsLeft = 10;
 	
+	/**
+	 * Displays a confirmation box with window title and displaying the input message to the user with yes and no buttons.
+	 * @param title The title of the confirmation box window.
+	 * @param message The message to be displayed to the user.
+	 * @return boolean true (Yes) or false (No).
+	 */
 	public static boolean display(String title, String message) {
 		Stage window = new Stage();
 		window.initModality(Modality.APPLICATION_MODAL);
 		window.setTitle(title);
 		window.setMinWidth(250);
+		
 		Label label = new Label();
 		label.setText(message);
 		

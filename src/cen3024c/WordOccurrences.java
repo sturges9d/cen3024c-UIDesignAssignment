@@ -23,20 +23,20 @@ import java.util.Map.Entry;
 public class WordOccurrences {
     
     /**
-     * Converts an ArrayList to HashMap.
-     * @param textToAnalyze
+     * Loops through the ArrayList, counts the number of occurrences of each word, and outputs a HashMap containing each word and its number of occurrences.
+     * @param inputText An ArrayList of Strings. Each string is a line of text from the readText method. 
      * @return HashMap containing (word, number of occurrences) pairs.
      */
-	public static HashMap<String, Integer> convertArrayListToHashMap(ArrayList<String> textToAnalyze) {
+	public static HashMap<String, Integer> convertArrayListToHashMap(ArrayList<String> inputText) {
     	// Count the number of occurrences of a word in the ArrayList of text from the URL and store the word and its number of occurrences in a HashMap.
         HashMap<String, Integer> results = new HashMap<>();
-        for (int i = 0; i < textToAnalyze.size(); i++) {
+        for (int i = 0; i < inputText.size(); i++) {
             int wordCount = 0;
-            String word = textToAnalyze.get(i);
-            for (int j = 0; j < textToAnalyze.size(); j++) {
-                if (textToAnalyze.get(j).equalsIgnoreCase(word)) {
+            String word = inputText.get(i);
+            for (int j = 0; j < inputText.size(); j++) {
+                if (inputText.get(j).equalsIgnoreCase(word)) {
                     wordCount++;
-                    textToAnalyze.remove(j);
+                    inputText.remove(j);
                 } // End of if statement.
             } // End of for loop.
             results.put(word, wordCount);
@@ -46,13 +46,13 @@ public class WordOccurrences {
     } // End of convertArrayListToHashMap() method.
     
     /**
-     * Converts a sorted HashMap to a String to be displayed.
-     * @param sortedHashMap 
-     * @return String in the format: "#. <word>, <number of occurrences>"
+     * Converts a sorted HashMap into Strings ending in a new line character for display.
+     * @param inputText A HashMap containing a word and its number of occurrences.
+     * @return String in the format: "#. word, number_of_occurrences"
      */
-    public static String convertHashMapToString(HashMap<String, Integer> sortedHashMap) {
+    public static String convertHashMapToString(HashMap<String, Integer> inputText) {
     	String result = ""; // Used for output to TestClass GUI.
-        Set<Entry<String, Integer>> entrySetSortedByValue = sortedHashMap.entrySet();
+        Set<Entry<String, Integer>> entrySetSortedByValue = inputText.entrySet();
         int i = 0;
         for(Entry<String, Integer> mapping : entrySetSortedByValue) {
             i++;
@@ -78,7 +78,7 @@ public class WordOccurrences {
 		try {
 			url = new URL(inputURL);
 		} catch (MalformedURLException e1) {
-			System.out.println("Malformed URL Exception: Make sure the URL is valid.");
+			System.out.println("Malformed URL Exception: Make sure the input value for the URL is valid.");
 			e1.printStackTrace();
 		} // End of try-catch block.
     	try {
@@ -130,11 +130,11 @@ public class WordOccurrences {
     } // End of readText method.
     
     /**
-     * Sorts the values stored in a HashMap
-     * @param sortedByValue
+     * Sorts the values stored in a HashMap according to the integer value, greatest to least.
+     * @param inputText HashMap with String keys and Integer values containing a word and its number of occurrences.
      * @return Sorted HashMap of words from highest occurrence to lowest.
      */
-    public static HashMap<String, Integer> sortHashMap(HashMap<String, Integer> results) {
+    public static HashMap<String, Integer> sortHashMap(HashMap<String, Integer> inputText) {
         // Custom comparator to order the values (occurrences) from greatest to least.
         Comparator<Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String,Integer>>() {
             public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
@@ -152,7 +152,7 @@ public class WordOccurrences {
         };
         
         // Place all the entries from the results HashMap into a Set.
-        Set<Entry<String, Integer>> resultsSet = results.entrySet();
+        Set<Entry<String, Integer>> resultsSet = inputText.entrySet();
 
         // Create a new ArrayList from the Set.
         List<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(resultsSet);
@@ -161,13 +161,13 @@ public class WordOccurrences {
         Collections.sort(listOfEntries, valueComparator);
 
         // Create a new LinkedHashMap to store the values from the sorted ArrayList.
-        LinkedHashMap<String, Integer> sortedByValue = new LinkedHashMap<String, Integer>(listOfEntries.size());
+        LinkedHashMap<String, Integer> result = new LinkedHashMap<String, Integer>(listOfEntries.size());
 
         // Place the key and value pairs into the new LinkedHashMap.
         for (Entry<String,Integer> entry : listOfEntries) {
-            sortedByValue.put(entry.getKey(), entry.getValue());
+        	result.put(entry.getKey(), entry.getValue());
         } // End of for loop.
-        return sortedByValue;
+        return result;
     } // End of sortHashMap method.
 
 } // End of WordOccurrences class.
