@@ -1,6 +1,5 @@
 /**
  * Created with guidance from TheNewBoston JavaFX tutorial, this class creates a confirmation box for a user to confirm their action.
- * 
  * @author Stephen Sturges Jr
  * @version 06/19/2022
  */
