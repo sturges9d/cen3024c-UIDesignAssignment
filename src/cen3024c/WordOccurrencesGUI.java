@@ -1,10 +1,12 @@
 /**
  * This class displays adds GUI functionality to the TextAnalyzer class via JavaFX.
- * 
  * @author Stephen Sturges Jr
  * @version 06/19/2022
  */
 package cen3024c;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -12,26 +14,35 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class TestClass extends Application {
+public class WordOccurrencesGUI extends Application {
 	
 	private Stage window;
-	private Scene scene1, scene2;
+	private Scene scene1;
+	private Scene scene2;
 	
-	// Constants for consistent button and window sizing.
+	// Constants for button and window sizes.
 	private final int buttonWidth = 50;
 	private final int buttonHeight = 20;
-	private final int windowWidth = 300;
-	private final int windowHeight = 430;
+	
+	private final int windowWidth = 250;
+	private final int windowHeight = 300;
+	
 	private final int insetsTop = 10;
 	private final int insetsRight = 10;
 	private final int insetsBottom = 10;
 	private final int insetsLeft = 10;
+	
+	// Webpage variables.
+	String textURL = "https://www.gutenberg.org/files/1065/1065-h/1065-h.htm";
+	String startText = "The Raven";
+	String endText = "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***";
 	
 	/**
 	 * This is the main method.
@@ -40,11 +51,12 @@ public class TestClass extends Application {
 	 */
 	public static void main(String[] args) {
 		launch(args);
-	}
+	} // End of main method.
 	
 	/**
 	 * This is the overridden start method from the Application class.
 	 */
+	@Override
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
 		window.setTitle("Word Occurances");
@@ -74,10 +86,16 @@ public class TestClass extends Application {
 		grid.setVgap(8);;
 		grid.setHgap(10);
 		
-		Label listTitle = new Label("Top 20 most used words in \"The Raven.\"");
+		Label listTitle = new Label("Top 20 most used words in \"" + startText + "\"");
 		GridPane.setConstraints(listTitle, 0, 0);
 		
-		Label listResult = new Label(TextAnalyzer.analyzeText());
+		ArrayList<String> poemText = WordOccurrences.readText(textURL, startText, endText);
+		HashMap<String, Integer> results = WordOccurrences.convertArrayListToHashMap(poemText);
+		HashMap<String, Integer> sortedResults = WordOccurrences.sortHashMap(results);
+		String listResultString = WordOccurrences.convertHashMapToString(sortedResults);
+		
+		ListView<String> listResult = new ListView<String>();
+		listResult.getItems().addAll(listResultString);
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
@@ -104,15 +122,16 @@ public class TestClass extends Application {
 		
 		window.setScene(scene1);
 		window.show();
-	}
+	} // End of start method.
 
 	/**
-	 * This method calls the ConfirmBox class to confirm user's choice to close the program.
+	 * This method calls the ConfirmBox class. Used to confirm the user's choice to close the program.
 	 */
 	private void closeProgram() {
 		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
 		if(answer) {
 			window.close();
-		}
-	}
-}
+		} // End of if statement.
+	} // End of closeProgram method.
+	
+} // End of WordOccurrencesGUI class.

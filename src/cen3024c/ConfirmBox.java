@@ -1,6 +1,5 @@
 /**
  * Created with guidance from TheNewBoston JavaFX tutorial, this class creates a confirmation box for a user to confirm their action.
- * 
  * @author Stephen Sturges Jr
  * @version 06/19/2022
  */
@@ -41,13 +40,16 @@ public class ConfirmBox {
 		// Create buttons.
 		Button yesButton = new Button("Yes");
 		yesButton.setPrefSize(buttonWidth, buttonHeight);
+		
 		Button noButton  = new Button("No");
 		noButton.setPrefSize(buttonWidth, buttonHeight);
+		
 		// Set button behavior.
 		yesButton.setOnAction(e -> {
 			answer = true;
 			window.close();
 		});
+		
 		noButton.setOnAction(e -> {
 			answer = false;
 			window.close();
@@ -65,11 +67,12 @@ public class ConfirmBox {
 		
 		// Add layout to scene.
 		Scene scene = new Scene(borderPane, windowWidth, windowHeight);
+		
 		// Display window.
 		window.setScene(scene);
 		window.showAndWait();
 		
 		return answer;
-	}
+	} // End of display method.
 
-}
+} // End of ConfirmBox class.
