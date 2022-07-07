@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class WordOccurrences{
+public class WordOccurrences {
     
     /**
      * Converts an ArrayList to HashMap.

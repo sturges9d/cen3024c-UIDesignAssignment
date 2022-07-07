@@ -1,5 +1,5 @@
 /**
- * This class displays adds GUI functionality to the TextAnalyzer class via JavaFX.
+ * This class controls the GUI functionality for the WordOccurrences class via JavaFX.
  * @author Stephen Sturges Jr
  * @version 06/19/2022
  */
@@ -45,8 +45,17 @@ public class WordOccurrencesGUI extends Application {
 	String endText = "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***";
 	
 	/**
+	 * Calls the ConfirmBox class. Used to confirm the user's choice to close the program.
+	 */
+	private void closeProgram() {
+		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
+		if(answer) {
+			window.close();
+		}
+	} // End of closeProgram method.
+    
+	/**
 	 * This is the main method.
-	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -54,7 +63,8 @@ public class WordOccurrencesGUI extends Application {
 	} // End of main method.
 	
 	/**
-	 * This is the overridden start method from the Application class.
+	 * Overrides the start method from the Application class.
+	 * @param primaryStage
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -71,6 +81,11 @@ public class WordOccurrencesGUI extends Application {
 		nextButton.setPrefSize(buttonWidth, buttonHeight);
 		nextButton.setOnAction(e -> window.setScene(scene2));
 		
+		VBox centerMenu = new VBox();
+		centerMenu.getChildren().addAll(label1);
+		centerMenu.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
+		centerMenu.setAlignment(Pos.CENTER);
+		
 		VBox bottomMenu1 = new VBox();
 		bottomMenu1.getChildren().addAll(nextButton);
 		bottomMenu1.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
@@ -80,7 +95,7 @@ public class WordOccurrencesGUI extends Application {
 		borderPane1.setCenter(label1);
 		borderPane1.setBottom(bottomMenu1);
 		
-		// Second scene.
+		// Second scene (Results screen).
 		GridPane grid = new GridPane();
 		grid.setPadding(new Insets(insetsTop, insetsRight, insetsBottom, insetsLeft));
 		grid.setVgap(8);;
@@ -96,6 +111,7 @@ public class WordOccurrencesGUI extends Application {
 		
 		ListView<String> listResult = new ListView<String>();
 		listResult.getItems().addAll(listResultString);
+
 		GridPane.setConstraints(listResult, 0, 1);
 		
 		grid.getChildren().addAll(listTitle, listResult);
@@ -123,15 +139,5 @@ public class WordOccurrencesGUI extends Application {
 		window.setScene(scene1);
 		window.show();
 	} // End of start method.
-
-	/**
-	 * This method calls the ConfirmBox class. Used to confirm the user's choice to close the program.
-	 */
-	private void closeProgram() {
-		Boolean answer = ConfirmBox.display("Confirmation", "Are you sure you want to exit?");
-		if(answer) {
-			window.close();
-		} // End of if statement.
-	} // End of closeProgram method.
-	
+    
 } // End of WordOccurrencesGUI class.
