@@ -35,13 +35,8 @@ class JUnitTestLogic {
 		ArrayList<String> testList = new ArrayList<String>();
 		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
 		
-		try {
-			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		} catch (MalformedURLException e) {
-			fail("Malformed URL exception.");
-			e.printStackTrace();
-		} // End of try-catch block.
-		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
+		testList = WordOccurrences.readText("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm", "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		testHashMap = WordOccurrences.convertArrayListToHashMap(testList);
 		assertNotNull(testHashMap);
 		System.out.println(testHashMap);
 	} // End of arrayListToHashMapConversionTest.
@@ -51,12 +46,7 @@ class JUnitTestLogic {
 		System.out.println("Test case: extractText.");
 		ArrayList<String> testList = new ArrayList<String>();
 		
-		try {
-			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		} catch (MalformedURLException e) {
-			fail("Malformed URL exception.");
-			e.printStackTrace();
-		} // End of try-catch block.
+		testList = WordOccurrences.readText("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm", "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
 		assertNotNull(testList);
 		System.out.println(testList);
 	} // End extractTextTest.
@@ -68,14 +58,9 @@ class JUnitTestLogic {
 		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
 		HashMap<String, Integer> sortedHashMap;
 		
-		try {
-			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		} catch (MalformedURLException e) {
-			fail("Malformed URL exception.");
-			e.printStackTrace();
-		} // End of try-catch block.
-		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
-		sortedHashMap = TextAnalyzer.sortHashMap(testHashMap);
+		testList = WordOccurrences.readText("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm", "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		testHashMap = WordOccurrences.convertArrayListToHashMap(testList);
+		sortedHashMap = WordOccurrences.sortHashMap(testHashMap);
 		assertNotNull(sortedHashMap);
 		System.out.println(sortedHashMap);
 	} // End of sortHashMapTest1.
@@ -87,14 +72,9 @@ class JUnitTestLogic {
 		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
 		HashMap<String, Integer> sortedHashMap;
 		
-		try {
-			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		} catch (MalformedURLException e) {
-			fail("Malformed URL exception.");
-			e.printStackTrace();
-		} // End of try-catch block.
-		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
-		sortedHashMap = TextAnalyzer.sortHashMap(testHashMap);
+		testList = WordOccurrences.readText("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm", "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		testHashMap = WordOccurrences.convertArrayListToHashMap(testList);
+		sortedHashMap = WordOccurrences.sortHashMap(testHashMap);
 		assertTrue(sortedHashMap.get("the") == 57);
 		assertTrue(sortedHashMap.get("caught") == 1);
 		System.out.println(sortedHashMap);
@@ -107,15 +87,10 @@ class JUnitTestLogic {
 		HashMap<String,Integer> testHashMap = new HashMap<String,Integer>();
 		HashMap<String, Integer> sortedHashMap;
 		
-		try {
-			testList = TextAnalyzer.extractText(new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"), "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
-		} catch (MalformedURLException e) {
-			fail("Malformed URL exception.");
-			e.printStackTrace();
-		} // End of try-catch block.
-		testHashMap = TextAnalyzer.convertArrayListToHashMap(testList);
-		sortedHashMap = TextAnalyzer.sortHashMap(testHashMap);
-		String sortedResultsString = TextAnalyzer.convertHashMapToString(sortedHashMap);
+		testList = WordOccurrences.readText("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm", "The Raven", "*** END OF THE PROJECT GUTENBERG EBOOK THE RAVEN ***");
+		testHashMap = WordOccurrences.convertArrayListToHashMap(testList);
+		sortedHashMap = WordOccurrences.sortHashMap(testHashMap);
+		String sortedResultsString = WordOccurrences.convertHashMapToString(sortedHashMap);
 		assertNotNull(sortedResultsString);
 		System.out.println(sortedResultsString);
 	} // End of convertHashMapToStringTest.
